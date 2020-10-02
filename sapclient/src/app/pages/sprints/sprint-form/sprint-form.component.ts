@@ -4,7 +4,7 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { finalize, switchMap } from 'rxjs/operators';
-import { SelectItem } from 'primeng';
+import { SelectItem, MessageService } from 'primeng';
 
 import { OrdemServicoService } from './../../../services/ordem-servico.service';
 import { Sprint } from './../../../models/sprint.model';
@@ -48,7 +48,8 @@ export class SprintFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private sprintService: SprintService,
     private statusService: StatusService,
-    private ordemServico: OrdemServicoService
+    private ordemServico: OrdemServicoService,
+    private messageService: MessageService
 
   ) { }
 
@@ -69,7 +70,7 @@ export class SprintFormComponent implements OnInit {
     this.exibir = true;
   }
 
- 
+
   private setAcaoAtual() {
     if (this.route.snapshot.url[0].path == 'novo') {
       this.titulo = 'Cadastro de Sprints';
@@ -84,9 +85,9 @@ export class SprintFormComponent implements OnInit {
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(3)]],
       dataInicio: [null, [Validators.required]],
-      dataTermino: [null, [Validators.required]],
-      descricao:[null],
+      dataTermino: [null, [Validators.required],],
       pontosFuncao: [null, [Validators.required]],
+      descricao:[null],
       impedimento: [null, [Validators.required]],
       prazo: [null, [Validators.required]],
       idStatus: [null, [Validators.required]]
@@ -99,6 +100,7 @@ export class SprintFormComponent implements OnInit {
       const recurso = Object.assign(new Sprint(), this.form.value);
       this.salvarSprint.emit(recurso);
       this.fecharModal();
+      this.messageService.add({ severity: 'info', summary: 'Cadastrado nova sprint' })
     }
   }
   validaDatas(data){
@@ -139,6 +141,19 @@ export class SprintFormComponent implements OnInit {
       })
     })
   }
+
+  // duracaoSprintInvalida() {
+  //   console.log(this.sprint);
+  //   let intervaloMinimo = 1000 * 60 * 60 * 24 * 15;
+  //   if (this.sprint.dataInicio) {
+  //     console.log(this.sprint.dataTermino.getTime() + ' ' + this.sprint.dataInicio.getTime());
+  //     let intervaloAtual: number = this.sprint.dataTermino.getTime() - this.sprint.dataInicio.getTime();
+  //     return intervaloAtual >= intervaloMinimo ? false : true;
+  //   }
+  //   console.log(this.sprint);
+  //   this.sprint.dataInicio = new Date(this.sprint.dataTermino.getTime() - intervaloMinimo);
+  //   return false;
+  // }
 
 }
 

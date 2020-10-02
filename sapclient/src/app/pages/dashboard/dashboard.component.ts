@@ -1,6 +1,5 @@
-import { Lider } from './../../models/lider.model';
-import { OrdemServico } from './../../models/ordem-servico.model';
 import { Sprint } from './../../models/sprint.model';
+import { Lider } from './../../models/lider.model';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { StatusService } from './../../services/status.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -12,15 +11,15 @@ import { ProjetoService } from './../../services/projeto.service';
 import { OrdemServicoService } from './../../services/ordem-servico.service';
 import { SituacaoService } from './../../services/situacao.service';
 
-import { Observable, forkJoin } from 'rxjs';
+import { Observable } from 'rxjs';
 
-import { finalize, map, tap } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { Output, EventEmitter,Component, OnInit, ViewChild } from '@angular/core';
 
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SelectItem, Table } from 'primeng';
 import { Projeto } from 'src/app/models/projeto.model';
-import { element } from 'protractor';
+
 
 
 
@@ -43,8 +42,6 @@ import { element } from 'protractor';
     ])
   ]
 })
-
-
 
 export class DashboardComponent implements OnInit {
 
@@ -73,7 +70,7 @@ export class DashboardComponent implements OnInit {
   
   sprints: Sprint[] = [];
   sprintsFiltradas: any = [];
-  lideres: any = [];
+  lideres: Lider[] = [];
   status: any = [];
   testeExibe: boolean;
 
@@ -81,7 +78,6 @@ export class DashboardComponent implements OnInit {
   lid : Lider;
 
   lista: any = [];
-  // listaFiltrada: any = [];
   listaLideres: SelectItem[] = [];
   listaClientes: SelectItem[] = [];
   filtroLider: any = [];
@@ -93,13 +89,13 @@ export class DashboardComponent implements OnInit {
 
   colunas: any[] = [
     { header: 'OS' },
-    {header : 'Chave OS'},
+    { header: 'Chave'},
     { header: 'Status da OS' },
     { header: 'Próxima Entrega' },
     { header: 'Prazo' },
     { header: 'PF' },
     { header: 'Fábrica(s)' },
-    { header: 'Ações' },
+    { header: 'Ação' },
   ];
 
   colunaSprint: any[] = [
@@ -109,9 +105,9 @@ export class DashboardComponent implements OnInit {
     { header: 'PF' },
     { header: 'Impedimento' },
     { header: 'Descrição' },
-    { header: 'No Prazo' },
+    { header: 'Prazo' },
     { header: 'Status' },
-    { header: 'Ações' },
+    { header: 'Ação' },
   ];
 
   dataBr = {
@@ -192,7 +188,6 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
-
   
   obterOrdemServico() {
     this.blockUI.start();
@@ -202,6 +197,7 @@ export class DashboardComponent implements OnInit {
       ordemServico => this.listaOrdemServico = ordemServico
     );
   }
+
   enviarFormOs(OrdemServico) {
     this.ordemServicoService.salvar(OrdemServico).pipe(
       finalize(() => this.blockUI.stop())
@@ -249,6 +245,10 @@ export class DashboardComponent implements OnInit {
       finalize(() => this.blockUI.stop())
     ).subscribe( sprints => {
       this.sprints = sprints;
+      sprints.forEach(element => {
+        element.dataInicio = new Date (`${element.dataInicio}T00:00:00`);
+        element.dataTermino = new Date(`${element.dataTermino}T00:00:00`);
+      })
       console.log(this.sprints);
       this.sprints = this.sprints.slice().sort((a, b) => new Date(b.dataInicio).getTime() - new Date(a.dataInicio).getTime());
       console.log(this.sprints);
@@ -268,11 +268,10 @@ export class DashboardComponent implements OnInit {
         finalize(() => this.blockUI.stop()),
       ).subscribe(osProjeto => {
         projeto.listaOs = osProjeto;
-        console.log(projeto)
         projeto.listaOs.forEach(e => {
           e.dataProximaEntrega = new Date (`${e.dataProximaEntrega}T00:00:00`);
           e.prazo = new Date(`${e.prazo}T00:00:00`);
-        console.log(e);
+
         });
       })
   }
@@ -310,7 +309,7 @@ export class DashboardComponent implements OnInit {
             (this.filtroCliente && this.filtroCliente.some(sel => sel == item.idCliente)) ||
             (this.filtroProjeto && this.filtroProjeto.some(sel => sel == item.idProjeto));
     });
-    console.log(this.listaFiltrada)
+
   }
 
   habilitarBotao(e, projeto) {
@@ -324,11 +323,6 @@ export class DashboardComponent implements OnInit {
 
   obterNomeStatus(id: number) {
     return this.status.find(status => status.id == id).descricao
-  }
-
-  obterNomeLider(id: number){
-    this.lid=this.lideres.find(lider => lider.id == id)
-  return this.lid?.nome
   }
 
   obterSituacaoSprint(id: number) {
@@ -348,6 +342,11 @@ export class DashboardComponent implements OnInit {
   obterNomeSituacao(id: number) {
     return this.situacoes.find(situacao => situacao.id == id).descricao
   }
+
+  obterNomeLider(id: number){
+    this.lid=this.lideres.find(lider => lider.id == id)
+    return this.lid?.nome
+    }
 
   obterNomeProjeto(id: number) {
     return this.projetos.find(projeto => projeto.id == id).nome
