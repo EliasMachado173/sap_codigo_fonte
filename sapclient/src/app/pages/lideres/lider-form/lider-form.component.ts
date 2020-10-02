@@ -24,7 +24,7 @@ export class LiderFormComponent implements OnInit {
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private liderService: LiderService,
-        private messageService: MessageService,
+        private messageService: MessageService
     ) { }
 
     ngOnInit(): void {
@@ -64,8 +64,10 @@ export class LiderFormComponent implements OnInit {
         ).subscribe(() => {
             const path: string = this.route.snapshot.parent.url[0].path;
             this.router.navigate([path]);
-            this.messageService.add({ severity: 'info', summary: 'Salvo Com Sucesso!' })
-        })
+            this.messageService.add({ severity: 'success', summary: 'Lider cadastrado com sucesso' });
+        }, error => {
+            this.messageService.add({ severity: 'error', summary: 'Erro ao cadastrar novo lider' })}
+            )
     }
 
     carregarLider() {
@@ -79,5 +81,7 @@ export class LiderFormComponent implements OnInit {
             })
         }
     }
+
+    
 
 }

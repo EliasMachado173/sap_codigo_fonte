@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng';
 import { Projeto } from './../../../models/projeto.model';
 import { SituacaoService } from './../../../services/situacao.service';
 import { ProjetoService } from './../../../services/projeto.service';
@@ -8,6 +9,8 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { OrdemServicoService } from './../../../services/ordem-servico.service';
 
 import { finalize, map } from 'rxjs/operators';
+import {ConfirmationService} from 'primeng/api';
+import {Message} from 'primeng/api';
 
 @Component({
   selector: 'app-os-list',
@@ -20,12 +23,12 @@ export class OsListComponent implements OnInit {
 
   titulo: string = 'Lista de Ordens de Serviço'
   listaOrdemServico$: Observable<any>;
-  listaOrdemServico: any = [];
   situacoes: any = [];
   projetos: any = [];
   status: any = [];
   display: boolean = false;
   projeto: Projeto;
+  msgs: Message[] = [];
   
   colunas: any = [
     { header: 'Nome' },
@@ -45,7 +48,9 @@ export class OsListComponent implements OnInit {
   constructor(
     private ordemServicoService: OrdemServicoService,
     private projetoService: ProjetoService,
-    private situacaoService: SituacaoService
+    private situacaoService: SituacaoService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
@@ -72,10 +77,29 @@ export class OsListComponent implements OnInit {
     this.blockUI.start();
     this.ordemServicoService.deletar(id).pipe(
       finalize(() => this.blockUI.stop())
-    ).subscribe(
-      () => this.obterTodos()
+    ).subscribe(() =>{
+      this.obterTodos()
+      this.messageService.add({ severity: 'success', summary: 'Ordem de serviço deletado com sucesso' });
+      }, error => {
+        this.messageService.add({ severity: 'error', summary: 'Erro ao deletar ordem de serviço' })
+      }
     );
   }
+  confirm2(id) {
+    this.confirmationService.confirm({
+        message: 'Você deseja excluir a ordem de serviço?',
+        header: 'Confirmação de exclusão',
+        icon: 'pi pi-info-circle',
+        accept: () => {
+            this.msgs = [{severity:'info', summary:'Confirmed', detail:'Ordem de serviço excluída'}];
+            this.deletar(id);
+        },
+        reject: () => {
+
+        },
+        key:"confirm"
+    });
+}
 
   obterSituacoes() {
     this.blockUI.start();
