@@ -29,3 +29,19 @@ body .ui-tabview {
 #DescricaoProjeto span{
     font-weight: bolder;
 }
+
+
+
+.teste {
+    justify-content: center;
+    max-width: 5pc;}
+
+.dialogHeader {  
+    position: relative;
+    background-color: #fefefe;
+    padding: 0;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+    
+   }
+

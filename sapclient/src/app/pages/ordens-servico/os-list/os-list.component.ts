@@ -29,7 +29,7 @@ export class OsListComponent implements OnInit {
   
   colunas: any = [
     { header: 'Nome' },
-    {header : 'Chave OS'},
+    { header : 'Chave OS'},
     { header: 'Próxima Entrega' },
     { header: 'Prazo' },
     { header: 'Defeitos do Cliente' },

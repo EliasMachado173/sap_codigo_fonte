@@ -94,6 +94,17 @@
         <td pEditableColumn>
           <p-cellEditor>
             <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="ordemservico.chave">
+            </ng-template>
+            <ng-template  pTemplate="output">
+            {{ ordemservico.chave | uppercase}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
               <p-dropdown (onChange)="habilitarBotao($event, ordemservico)" [options]="situacaoDropdown" [(ngModel)]="ordemservico.idSituacao"></p-dropdown>
             </ng-template>
             <ng-template pTemplate="output">
@@ -166,11 +177,11 @@
     <ng-template pTemplate="rowexpansion" let-ordemservico let-columns="columns">
       <tr>
         <td [attr.colspan]="columns.length + 1">
-          <div class="p-grid -fluid" style="font-size:16px;padding:5px 5px 20px 5px;">
-            <p-table paginator="true" [rows]="10" [columns]="coluna" [value]="sprints" dataKey="nome">
+          <div class="p-grid -fluid" style="font-size:15px;padding:6px 6px 20px 6px;">
+            <p-table paginator="true" [rows]="10" [columns]="coluna" [value]="sprints" dataKey="nome"  >
               <ng-template pTemplate="header" let-subcolumns>
       <tr>
-        <th [class.action]="coluna.header == 'Ações'" *ngFor="let coluna of colunaSprint"   pResizableColumn  >
+        <th style="width: 7pc;" [class.action]="coluna.header == 'Ações'" *ngFor="let coluna of colunaSprint"   pResizableColumn  >
           {{coluna.header}}
         </th>
       </tr>
@@ -223,10 +234,10 @@
           </p-cellEditor>
         </td>
 
-        <td pEditableColumn>
+        <td id="impedimento" pEditableColumn>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-dropdown (onChange)="habilitarBotao($event, sprints)" [options]="simNaoDropDown"  [(ngModel)]="sprints.impedimento" style="width:400px;" ></p-dropdown>
+              <p-dropdown (onChange)="habilitarBotao($event, sprints)" [options]="simNaoDropDown"  [(ngModel)]="sprints.impedimento" style="width:400px;"></p-dropdown>
             </ng-template>
             <ng-template pTemplate="output">
               {{ obterSimNao(sprints.impedimento) }}
@@ -237,9 +248,9 @@
         <td pEditableColumn>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-dialog header="Descrição da Sprint" [(visible)]="display" [position]="position"  [style]="{width: '50vw'}" [maximizable]="true" [(ngModel)]="sprints.descricao" >
-              <p>
-                    <input type="text" pInputText [(ngModel)]="sprints.descricao">
+              <p-dialog  header="Descrição da Sprint" [(visible)]="display" [position]="position"  [style]="{width: '50vw'}" [maximizable]="true" [(ngModel)]="sprints.descricao" >
+              <p class="dialogHeader">
+                    <textarea id="textarea" type="text"  style="width:100%" [(ngModel)]="sprints.descricao"></textarea>
               </p>
                   <p-footer>
                       <button type="button" pButton icon="pi pi-check" (click)="showDialog()" label="Yes"></button>
@@ -250,7 +261,7 @@
             <ng-template pTemplate="output">
             </ng-template>
           </p-cellEditor>
-          <button (click)="showDialog()" pButton icon="pi pi-info-circle" label="Descrição"></button>
+          <button class="teste" (click)="showDialog()" pButton icon="pi pi-info-circle" label="Info"></button>
 
         </td>
 

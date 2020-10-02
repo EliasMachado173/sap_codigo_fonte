@@ -93,6 +93,7 @@ export class DashboardComponent implements OnInit {
 
   colunas: any[] = [
     { header: 'OS' },
+    {header : 'Chave OS'},
     { header: 'Status da OS' },
     { header: 'Próxima Entrega' },
     { header: 'Prazo' },
@@ -106,9 +107,9 @@ export class DashboardComponent implements OnInit {
     { header: 'Início' },
     { header: 'Término' },
     { header: 'PF' },
-    { header: 'Impedimento?' },
+    { header: 'Impedimento' },
     { header: 'Descrição' },
-    { header: 'No Prazo?' },
+    { header: 'No Prazo' },
     { header: 'Status' },
     { header: 'Ações' },
   ];
